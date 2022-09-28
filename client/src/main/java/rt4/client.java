@@ -217,7 +217,13 @@ public final class client extends GameShell {
 	@OriginalMember(owner = "client!client", name = "main", descriptor = "([Ljava/lang/String;)V")
 	public static void main(@OriginalArg(0) String[] arg0) {
 		try {
+			System.out.println("Config: "+arg0[0]);
+			System.out.println("PluginsDir: "+arg0[1]);
+			GlobalConfig.EXTENDED_CONFIG_PATH = arg0[0];
 			GlobalJsonConfig.load(GlobalConfig.EXTENDED_CONFIG_PATH);
+			GlobalJsonConfig.instance.pluginsFolder = arg0[1];
+
+
 		} catch (Exception ex) {
 			ex.printStackTrace();
 		}

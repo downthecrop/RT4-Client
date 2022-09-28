@@ -133,7 +133,7 @@ public class API {
         GameShell.canvas.addMouseWheelListener(mw);
     }
 
-    public static void AddKeyboardListener(KeyAdapter k) {
+    public static void AddKeyboardListener(KeyListener k) {
         GameShell.canvas.addKeyListener(k);
     }
 

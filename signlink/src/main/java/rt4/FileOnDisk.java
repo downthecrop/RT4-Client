@@ -27,6 +27,7 @@ public final class FileOnDisk {
 
 	@OriginalMember(owner = "signlink!qm", name = "<init>", descriptor = "(Ljava/io/File;Ljava/lang/String;J)V")
 	public FileOnDisk(@OriginalArg(0) File file, @OriginalArg(1) String mode, @OriginalArg(2) long maxLength) throws IOException {
+		System.out.println("Attempting to read file" + file.getName());
 		if (maxLength == -1L) {
 			maxLength = Long.MAX_VALUE;
 		}

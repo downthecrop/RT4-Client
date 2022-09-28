@@ -56,8 +56,6 @@ public class plugin extends Plugin {
 
     @Override
     public void ProcessCommand(String commandStr, String[] args) {
-        if (!API.PlayerHasPrivilege(Privileges.JMOD)) return;
-
         if (commandStr.equalsIgnoreCase("::npcdebug")) {
             isEnabled = !isEnabled;
         }
