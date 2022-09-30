@@ -685,13 +685,10 @@ public abstract class GameShell extends Applet implements Runnable, FocusListene
 			topMargin = 0;
 			instance = this;
 			frame = new Frame();
-			frame.setTitle("Jagex");
-			frame.setResizable(true);
+			frame.setUndecorated(true);
 			frame.addWindowListener(this);
 			frame.setVisible(true);
-			frame.setBackground(Color.black);
 			frame.toFront();
-			frame.pack();
 			@Pc(44) Insets insets = frame.getInsets();
 			frame.setSize(insets.left + frameWidth + insets.right, insets.top + frameHeight + insets.bottom);
 			GameShell.setFpsTarget(50); // Static default framerate target of rs
