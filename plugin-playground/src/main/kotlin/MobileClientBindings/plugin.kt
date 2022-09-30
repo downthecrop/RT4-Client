@@ -32,18 +32,17 @@ class plugin : Plugin() {
 
             if(capitalize){
                 capitalize = false;
-                println("Replacing"+e.keyCode);
-                println("Replacing"+e.keyChar);
+                println("Replaced char: "+ e.keyChar);
                 if(isSpecial(e.keyChar)){
                     e.keyChar = getSpecial(e.keyChar);
                 } else {
                     e.keyChar = Character.toUpperCase(e.keyChar);
                 }
-                println("with"+e.keyChar);
+                println("With char: "+ e.keyChar);
             }
 
-
             val c = Keyboard.getKeyChar(e)
+            println("WRITING: "+e.keyChar);
             if (c >= 0) {
                 val index = Keyboard.typedQueueWriterIndex + 1 and 0x7F
                 if (Keyboard.typedQueueReaderIndex != index) {
@@ -61,7 +60,7 @@ class plugin : Plugin() {
             if(e == null) return
 
             if (e.keyCode == KeyEvent.VK_F12) {
-                capitalize = !capitalize
+                capitalize = true;
             }
 
             Keyboard.idleLoops = 0
