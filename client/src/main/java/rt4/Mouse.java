@@ -112,6 +112,7 @@ public final class Mouse implements MouseListener, MouseMotionListener, FocusLis
 			anInt2467 = 0;
 			currentMouseX = arg0.getX();
 			currentMouseY = arg0.getY();
+			//System.out.println("X: "+currentMouseX+" Y: "+currentMouseY);
 		}
 	}
 

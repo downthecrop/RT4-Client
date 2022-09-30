@@ -284,7 +284,6 @@ public final class client extends GameShell {
 			instance = c;
 			c.startApplication(modeWhat + 32, "runescape");
 			GameShell.frame.setLocationRelativeTo(null);
-			GameShell.frame.setSize(1024, 768); // set a reasonable size by default
 		} catch (@Pc(167) Exception ex) {
 			TracingException.report(null, ex);
 		}

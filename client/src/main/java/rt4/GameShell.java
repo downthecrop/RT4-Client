@@ -322,6 +322,7 @@ public abstract class GameShell extends Applet implements Runnable, FocusListene
 
 	@OriginalMember(owner = "client!rc", name = "b", descriptor = "(B)V")
 	public final synchronized void addCanvas() {
+		Mouse ml = new Mouse();
 		if (canvas != null) {
 			canvas.removeFocusListener(this);
 			canvas.getParent().remove(canvas);
@@ -347,6 +348,10 @@ public abstract class GameShell extends Applet implements Runnable, FocusListene
 		}
 		canvas.addFocusListener(this);
 		canvas.requestFocus();
+		canvas.addMouseListener(ml);
+		canvas.addMouseMotionListener(ml);
+		frame.addMouseListener(ml);
+		frame.addMouseMotionListener(ml);
 		focusIn = true;
 		fullRedraw = true;
 		focus = true;
@@ -673,8 +678,8 @@ public abstract class GameShell extends Applet implements Runnable, FocusListene
 		try {
 			leftMargin = 0;
 			clientBuild = 530;
-			frameWidth = 1024;
-			frameHeight = 768;
+			frameWidth = 765;
+			frameHeight = 503;
 			canvasWidth = frameWidth;
 			canvasHeight = frameHeight;
 			topMargin = 0;
@@ -686,9 +691,10 @@ public abstract class GameShell extends Applet implements Runnable, FocusListene
 			frame.setVisible(true);
 			frame.setBackground(Color.black);
 			frame.toFront();
+			frame.pack();
 			@Pc(44) Insets insets = frame.getInsets();
 			frame.setSize(insets.left + frameWidth + insets.right, insets.top + frameHeight + insets.bottom);
-			GameShell.setFpsTarget(getCurrentDevice().getDisplayMode().getRefreshRate());
+			GameShell.setFpsTarget(50); // Static default framerate target of rs
 			signLink2 = signLink = new SignLink(null, cacheId, cacheSubDir, 28);
 			@Pc(76) PrivilegedRequest request = signLink.startThread(1, this);
 			while (request.status == 0) {
