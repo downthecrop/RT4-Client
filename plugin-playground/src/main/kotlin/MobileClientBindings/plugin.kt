@@ -1,11 +1,12 @@
 package MobileClientBindings
 
+import BasicInputQOL.plugin
 import plugin.Plugin
 import plugin.annotations.PluginMeta
 import plugin.api.*
 import rt4.Keyboard
-import java.awt.event.KeyEvent
-import java.awt.event.KeyListener
+import java.awt.event.*
+import javax.swing.SwingUtilities
 
 
 @PluginMeta(
@@ -15,10 +16,72 @@ import java.awt.event.KeyListener
 )
 class plugin : Plugin() {
 
+    companion object {
+        private var cameraToggle = false;
+        private var lastMouseWheelX = 0
+        private var lastMouseWheelY = 0
+        private val defaultCameraPYZ = Triple(128.0, 0.0, 600)
+    }
+
     override fun Init() {
         // Unregister the default keyboard listener
         Keyboard.stop(rt4.GameShell.canvas)
         API.AddKeyboardListener(KeyboardCallback)
+        API.AddMouseListener(MouseCallbacks)
+    }
+
+    object MouseCallbacks : MouseAdapter() {
+        override fun mouseMoved(e: MouseEvent?) {
+            e ?: return
+            if (cameraToggle) {
+                val x = e.x
+                val y = e.y
+                val accelX = lastMouseWheelX - x
+                val accelY = lastMouseWheelY - y
+                lastMouseWheelX = x
+                lastMouseWheelY = y
+                API.UpdateCameraYaw(accelX * 2.0)
+                API.UpdateCameraPitch(-accelY * 2.0)
+            }
+        }
+        override fun mouseDragged(e: MouseEvent?) {
+            e ?: return
+            if (cameraToggle) {
+                val x = e.x
+                val y = e.y
+                val accelX = lastMouseWheelX - x
+                val accelY = lastMouseWheelY - y
+                lastMouseWheelX = x
+                lastMouseWheelY = y
+                API.UpdateCameraYaw(accelX * 2.0)
+                API.UpdateCameraPitch(-accelY * 2.0)
+            }
+        }
+
+        override fun mouseClicked(e: MouseEvent?) {
+            e ?: return
+
+            val width = API.GetWindowDimensions().width;
+            val compassBordersX = intArrayOf(width - 165, width - 125)
+            val compassBordersY = intArrayOf(0, 45)
+
+            if (
+                e.x in compassBordersX[0]..compassBordersX[1]
+                && e.y in compassBordersY[0]..compassBordersY[1]
+            )
+            {
+                API.SetCameraPitch(defaultCameraPYZ.first)
+                API.SetCameraYaw(defaultCameraPYZ.second)
+            }
+        }
+
+        override fun mousePressed(e: MouseEvent?) {
+            e ?: return
+            if (cameraToggle) {
+                lastMouseWheelX = e.x
+                lastMouseWheelY = e.y
+            }
+        }
     }
 
     object KeyboardCallback : KeyListener {
@@ -61,6 +124,13 @@ class plugin : Plugin() {
 
             if (e.keyCode == KeyEvent.VK_F12) {
                 capitalize = true;
+            }
+
+            if(e.keyCode == KeyEvent.VK_F9) {
+                cameraToggle = true;
+            }
+            if(e.keyCode == KeyEvent.VK_F8) {
+                cameraToggle = false;
             }
 
             Keyboard.idleLoops = 0

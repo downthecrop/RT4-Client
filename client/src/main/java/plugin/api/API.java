@@ -125,8 +125,8 @@ public class API {
     }
 
     public static void AddMouseListener(MouseAdapter m) {
-        GameShell.canvas.addMouseListener(m);
-        GameShell.canvas.addMouseMotionListener(m);
+        GameShell.frame.addMouseListener(m);
+        GameShell.frame.addMouseMotionListener(m);
     }
 
     public static void AddMouseWheelListener(MouseWheelListener mw) {
