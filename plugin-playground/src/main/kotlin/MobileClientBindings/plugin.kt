@@ -1,10 +1,10 @@
 package MobileClientBindings
 
-import BasicInputQOL.plugin
 import plugin.Plugin
 import plugin.annotations.PluginMeta
 import plugin.api.*
 import rt4.Keyboard
+import rt4.Mouse
 import java.awt.event.*
 import javax.swing.SwingUtilities
 
@@ -18,6 +18,7 @@ class plugin : Plugin() {
 
     companion object {
         private var cameraToggle = false;
+        private var rightClickToggle = false;
         private var lastMouseWheelX = 0
         private var lastMouseWheelY = 0
         private val defaultCameraPYZ = Triple(128.0, 0.0, 600)
@@ -81,6 +82,27 @@ class plugin : Plugin() {
                 lastMouseWheelX = e.x
                 lastMouseWheelY = e.y
             }
+            if (SwingUtilities.isMiddleMouseButton(e)) {
+                return
+            }
+
+            if (Mouse.instance != null) {
+                Mouse.anInt2467 = 0
+                Mouse.anInt1034 = e.x
+                Mouse.anInt4973 = e.y
+                Mouse.aLong161 = MonotonicClock.currentTimeMillis()
+                if (e.modifiersEx and MouseEvent.BUTTON3_DOWN_MASK == 0 && !rightClickToggle) {
+                    Mouse.anInt1313 = 1
+                    Mouse.anInt1759 = 1
+                } else {
+                    rightClickToggle = false;
+                    Mouse.anInt1313 = 2
+                    Mouse.anInt1759 = 2
+                }
+            }
+            if (e.isPopupTrigger) {
+                e.consume()
+            }
         }
     }
 
@@ -124,13 +146,24 @@ class plugin : Plugin() {
 
             if (e.keyCode == KeyEvent.VK_F12) {
                 capitalize = true;
+                return;
             }
 
             if(e.keyCode == KeyEvent.VK_F9) {
                 cameraToggle = true;
+                return;
             }
             if(e.keyCode == KeyEvent.VK_F8) {
                 cameraToggle = false;
+                return;
+            }
+            if(e.keyCode == KeyEvent.VK_F10) {
+                rightClickToggle = false;
+                return;
+            }
+            if(e.keyCode == KeyEvent.VK_F11) {
+                rightClickToggle = true;
+                return;
             }
 
             Keyboard.idleLoops = 0
@@ -201,6 +234,21 @@ class plugin : Plugin() {
         fun isSpecial(c: Char): Boolean {
             val specialChars = "/*!@#$%^&*:();\"{}_[+=-_]\'|\\?/<>,."
             return Character.isDigit(c) || specialChars.contains("" + c)
+        }
+    }
+
+    object MonotonicClock {
+        private var leapMillis: Long = 0
+
+        private var previous: Long = 0
+        @Synchronized
+        fun currentTimeMillis(): Long {
+            val now = System.currentTimeMillis()
+            if (previous > now) {
+                leapMillis += previous - now
+            }
+            previous = now
+            return leapMillis + now
         }
     }
 
