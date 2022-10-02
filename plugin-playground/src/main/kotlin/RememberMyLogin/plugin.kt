@@ -17,9 +17,11 @@ class plugin : Plugin() {
     var username = ""
     var password = ""
 
+
     override fun Init() {
-        username = API.GetData("login-user") as? String ?: ""
-        password = API.GetData("login-pass") as? String ?: ""
+        // Set by PojavLauncher
+        username = System.getProperty("username")
+        password = System.getProperty("password")
     }
 
     override fun ComponentDraw(componentIndex: Int, component: Component?, screenX: Int, screenY: Int) {
