@@ -50,6 +50,7 @@ public final class Mouse implements MouseListener, MouseMotionListener, FocusLis
 	public static long prevClickTime = 0L;
 	@OriginalMember(owner = "client!wl", name = "u", descriptor = "I")
 	public static int anInt5895 = 0;
+	public static boolean isDragClick = false;
 
 	@OriginalMember(owner = "client!sc", name = "a", descriptor = "(ILjava/awt/Component;)V")
 	public static void stop(@OriginalArg(1) Component arg0) {
@@ -73,7 +74,11 @@ public final class Mouse implements MouseListener, MouseMotionListener, FocusLis
 	public static void loop() {
 		@Pc(2) Mouse local2 = instance;
 		synchronized (instance) {
-			pressedButton = anInt1759;
+			if(isDragClick) {
+				pressedButton = 1;
+			} else {
+				pressedButton = anInt1759;
+			}
 			lastMouseX = currentMouseX;
 			lastMouseY = currentMouseY;
 			clickButton = anInt1313;
@@ -82,6 +87,7 @@ public final class Mouse implements MouseListener, MouseMotionListener, FocusLis
 			clickY = anInt4973;
 			clickTime = aLong161;
 			anInt1313 = 0;
+			System.out.println(pressedButton);
 		}
 	}
 

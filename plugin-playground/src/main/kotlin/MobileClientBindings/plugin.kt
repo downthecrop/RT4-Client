@@ -3,11 +3,10 @@ package MobileClientBindings
 import plugin.Plugin
 import plugin.annotations.PluginMeta
 import plugin.api.*
+import rt4.Camera
 import rt4.Keyboard
 import rt4.Mouse
 import java.awt.event.*
-import javax.swing.SwingUtilities
-
 
 @PluginMeta(
     author = "downthecrop",
@@ -21,7 +20,6 @@ class plugin : Plugin() {
         private var rightClickToggle = false;
         private var lastMouseWheelX = 0
         private var lastMouseWheelY = 0
-        private val defaultCameraPYZ = Triple(128.0, 0.0, 600)
     }
 
     override fun Init() {
@@ -61,19 +59,6 @@ class plugin : Plugin() {
 
         override fun mouseClicked(e: MouseEvent?) {
             e ?: return
-
-            val width = API.GetWindowDimensions().width;
-            val compassBordersX = intArrayOf(width - 165, width - 125)
-            val compassBordersY = intArrayOf(0, 45)
-
-            if (
-                e.x in compassBordersX[0]..compassBordersX[1]
-                && e.y in compassBordersY[0]..compassBordersY[1]
-            )
-            {
-                API.SetCameraPitch(defaultCameraPYZ.first)
-                API.SetCameraYaw(defaultCameraPYZ.second)
-            }
         }
 
         override fun mousePressed(e: MouseEvent?) {
@@ -82,10 +67,6 @@ class plugin : Plugin() {
                 lastMouseWheelX = e.x
                 lastMouseWheelY = e.y
             }
-            if (SwingUtilities.isMiddleMouseButton(e)) {
-                return
-            }
-
             if (Mouse.instance != null) {
                 Mouse.anInt2467 = 0
                 Mouse.anInt1034 = e.x
@@ -144,11 +125,18 @@ class plugin : Plugin() {
             // for delete key ect.
             if(e == null) return
 
-            if (e.keyCode == KeyEvent.VK_F12) {
-                capitalize = true;
+            if(e.keyCode == KeyEvent.VK_F3) {
+                API.UpdateCameraZoom(-1)
                 return;
             }
-
+            if(e.keyCode == KeyEvent.VK_F4) {
+                API.UpdateCameraZoom(1)
+                return;
+            }
+            if(e.keyCode == KeyEvent.VK_F5) {
+                Mouse.isDragClick = !Mouse.isDragClick;
+                return;
+            }
             if(e.keyCode == KeyEvent.VK_F9) {
                 cameraToggle = true;
                 return;
@@ -165,6 +153,11 @@ class plugin : Plugin() {
                 rightClickToggle = true;
                 return;
             }
+            if (e.keyCode == KeyEvent.VK_F12) {
+                capitalize = true;
+                return;
+            }
+
 
             Keyboard.idleLoops = 0
             var code: Int = e.keyCode
@@ -251,119 +244,4 @@ class plugin : Plugin() {
             return leapMillis + now
         }
     }
-
-    /*
-    key listeners
-       public final synchronized void keyPressed(KeyEvent var1) {
-      try {
-         System.out.println("Key code: " + var1.getKeyCode());
-         switch (var1.getKeyCode())
-         {
-            case 16:
-               MouseWheel.shiftDown = true;
-               break;
-            case 17:
-               MouseWheel.ctrlDown = true;
-               break;
-            case 116:
-               Client.ZOOM -= 20;
-               return;
-            case 115:
-               Client.ZOOM += 20;
-               return;
-            case 120:
-               //Cam On
-               new isMiddleMouse(true);
-               return;
-            case 119:
-               //Cam Off
-               new isMiddleMouse(false);
-               return;
-            case 121:
-               if(isRightClick.getRC()){
-                  new isRightClick(false);
-               }
-               return;
-            case 122:
-               if(!isRightClick.getRC()){
-                  new isRightClick(true);
-               }
-               return;
-            case 123:
-               capitalize = true;
-               return;
-
-
-     */
-
-
-
-    /*
-    fun soemthing() {
-        System.out.println("Key code: " + var1.getKeyCode())
-        when (var1.getKeyCode()) {
-            16 -> MouseWheel.shiftDown = true
-            17 -> MouseWheel.ctrlDown = true
-            116 -> {
-                Client.ZOOM -= 20
-                return
-            }
-            115 -> {
-                Client.ZOOM += 20
-                return
-            }
-            120 -> {
-                //Cam On
-                isMiddleMouse(true)
-                return
-            }
-            119 -> {
-                //Cam Off
-                isMiddleMouse(false)
-                return
-            }
-            121 -> {
-                if (isRightClick.getRC()) {
-                    isRightClick(false)
-                }
-                return
-            }
-            122 -> {
-                if (!isRightClick.getRC()) {
-                    isRightClick(true)
-                }
-                return
-            }
-            123 -> {
-                capitalize = true
-                return
-            }
-        }
-
-        if(capitalize){
-            capitalize = false;
-            System.out.println("Replacing"+var1.getKeyCode());
-            System.out.println("Replacing"+var1.getKeyChar());
-            if(isSpecial(var1.getKeyChar())){
-                var1.setKeyChar(getSpecial(var1.getKeyChar()));
-            } else {
-                var1.setKeyChar(Character.toUpperCase(var1.getKeyChar()));
-            }
-            System.out.println("with"+var1.getKeyChar());
-        }
-    }
-
-    public class isMiddleMouse {
-        private static boolean rcState = false;
-        public static synchronized boolean getRC(){
-            return rcState;
-        }
-        public isMiddleMouse(boolean state){
-            rcState = state;
-        }
-    }
-}
-*/
-
-
 }
