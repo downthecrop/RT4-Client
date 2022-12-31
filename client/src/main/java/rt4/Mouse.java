@@ -87,7 +87,7 @@ public final class Mouse implements MouseListener, MouseMotionListener, FocusLis
 			clickY = anInt4973;
 			clickTime = aLong161;
 			anInt1313 = 0;
-			System.out.println(pressedButton);
+			//System.out.println(pressedButton);
 		}
 	}
 

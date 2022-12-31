@@ -8,9 +8,9 @@ import rt4.JagString
 import rt4.Player
 
 @PluginMeta (
-    author = "Ceikry",
+    author = "Ceikry + Crop",
     description = "Stores your last used login for automatic reuse",
-    version = 1.0
+    version = 1.1
 )
 class plugin : Plugin() {
     var hasRan = false
@@ -20,8 +20,12 @@ class plugin : Plugin() {
 
     override fun Init() {
         // Set by PojavLauncher
-        username = System.getProperty("username")
-        password = System.getProperty("password")
+        if(System.getProperty("username") != null) {
+            username = System.getProperty("username")
+        }
+        if (System.getProperty("password") != null) {
+            password = System.getProperty("username")
+        }
     }
 
     override fun ComponentDraw(componentIndex: Int, component: Component?, screenX: Int, screenY: Int) {

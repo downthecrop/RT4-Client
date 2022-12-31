@@ -106,4 +106,6 @@ public abstract class Plugin {
      * @param currentEntries
      */
     public void OnMiniMenuCreate(MiniMenuEntry[] currentEntries) {}
+
+    public void OnMoveCameraWithPlayer() {}
 }
