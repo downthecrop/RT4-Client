@@ -24,7 +24,7 @@ class plugin : Plugin() {
             username = System.getProperty("username")
         }
         if (System.getProperty("password") != null) {
-            password = System.getProperty("username")
+            password = System.getProperty("password")
         }
     }
 
