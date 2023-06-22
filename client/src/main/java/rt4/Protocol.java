@@ -2814,18 +2814,19 @@ public class Protocol {
 												Cheat.teleport(PlayerList.self.movementQueueX[0] + Camera.originX, PlayerList.self.movementQueueZ[0] + Camera.originZ, y);
 											}
 											if (LoginManager.staffModLevel > 0 && Keyboard.pressedKeys[Keyboard.KEY_CTRL] && Keyboard.pressedKeys[Keyboard.KEY_SHIFT]) {
-												if (MiniMenu.anInt1742 != -1) {
-													Cheat.teleport(Camera.originX + MiniMenu.anInt1742, Camera.originZ - -MiniMenu.anInt2954, Player.plane);
+												if (MiniMenu.worldSpaceTileX != -1) {
+													Cheat.teleport(Camera.originX + MiniMenu.worldSpaceTileX, Camera.originZ - -MiniMenu.worldSpaceTileZ, Player.plane);
+													System.out.println("Clicked Pos: " + (Camera.originX + MiniMenu.worldSpaceTileX) + " " + (Camera.originZ - -MiniMenu.worldSpaceTileZ));
 												}
 												anInt4422 = 0;
 												MiniMenu.anInt3096 = 0;
 											} else if (MiniMenu.anInt3096 == 2) {
-												if (MiniMenu.anInt1742 != -1) {
+												if (MiniMenu.worldSpaceTileX != -1) {
 													outboundBuffer.p1isaac(131);
 													outboundBuffer.mp4(MiniMenu.anInt2512);
-													outboundBuffer.p2add(Camera.originX + MiniMenu.anInt1742);
+													outboundBuffer.p2add(Camera.originX + MiniMenu.worldSpaceTileX);
 													outboundBuffer.ip2add(MiniMenu.anInt506);
-													outboundBuffer.p2add(MiniMenu.anInt2954 + Camera.originZ);
+													outboundBuffer.p2add(MiniMenu.worldSpaceTileZ + Camera.originZ);
 													Cross.type = 1;
 													Cross.milliseconds = 0;
 													Cross.y = Mouse.clickY;
@@ -2833,18 +2834,18 @@ public class Protocol {
 												}
 												MiniMenu.anInt3096 = 0;
 											} else if (anInt4422 == 2) {
-												if (MiniMenu.anInt1742 != -1) {
+												if (MiniMenu.worldSpaceTileX != -1) {
 													outboundBuffer.p1isaac(179);
-													outboundBuffer.p2(Camera.originZ + MiniMenu.anInt2954);
-													outboundBuffer.p2(MiniMenu.anInt1742 + Camera.originX);
+													outboundBuffer.p2(Camera.originZ + MiniMenu.worldSpaceTileZ);
+													outboundBuffer.p2(MiniMenu.worldSpaceTileX + Camera.originX);
 													Cross.milliseconds = 0;
 													Cross.type = 1;
 													Cross.x = Mouse.clickX;
 													Cross.y = Mouse.clickY;
 												}
 												anInt4422 = 0;
-											} else if (MiniMenu.anInt1742 != -1 && MiniMenu.anInt3096 == 0 && anInt4422 == 0) {
-												@Pc(1871) boolean local1871 = PathFinder.findPath(PlayerList.self.movementQueueZ[0], 0, 0, true, 0, MiniMenu.anInt1742, 0, 0, 0, MiniMenu.anInt2954, PlayerList.self.movementQueueX[0]);
+											} else if (MiniMenu.worldSpaceTileX != -1 && MiniMenu.anInt3096 == 0 && anInt4422 == 0) {
+												@Pc(1871) boolean local1871 = PathFinder.findPath(PlayerList.self.movementQueueZ[0], 0, 0, true, 0, MiniMenu.worldSpaceTileX, 0, 0, 0, MiniMenu.worldSpaceTileZ, PlayerList.self.movementQueueX[0]);
 												if (local1871) {
 													Cross.y = Mouse.clickY;
 													Cross.milliseconds = 0;
@@ -2852,7 +2853,7 @@ public class Protocol {
 													Cross.type = 1;
 												}
 											}
-											MiniMenu.anInt1742 = -1;
+											MiniMenu.worldSpaceTileX = -1;
 											method843();
 											if (InterfaceList.aClass13_22 != component) {
 												if (component != null) {

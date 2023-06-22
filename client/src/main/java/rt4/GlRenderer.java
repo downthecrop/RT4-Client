@@ -18,6 +18,9 @@ public final class GlRenderer {
 	@OriginalMember(owner = "client!tf", name = "a", descriptor = "Ljava/lang/String;")
 	private static String vendor;
 
+	public static float vFOV = 0;
+	public static float hFOV = 0;
+
 	@OriginalMember(owner = "client!tf", name = "b", descriptor = "Ljava/lang/String;")
 	private static String renderer;
 
@@ -535,6 +538,7 @@ public final class GlRenderer {
 		gl.glMatrixMode(GL2.GL_PROJECTION);
 		gl.glLoadIdentity();
 		method4175((float) local7 * aFloat34, (float) local17 * aFloat34, (float) -local35 * aFloat34, (float) -local25 * aFloat34, 50.0F, (float) GlobalConfig.VIEW_DISTANCE);
+		//System.out.println("FOV?: " + (local7 * -aFloat34));
 		setViewportBounds(arg0, canvasHeight - arg1 - arg3, arg2, arg3);
 		gl.glMatrixMode(GL2.GL_MODELVIEW);
 		gl.glLoadIdentity();
@@ -594,8 +598,17 @@ public final class GlRenderer {
 	}
 
 	@OriginalMember(owner = "client!tf", name = "a", descriptor = "(FFFFFF)V")
-	private static void method4175(@OriginalArg(0) float arg0, @OriginalArg(1) float arg1, @OriginalArg(2) float arg2, @OriginalArg(3) float arg3, @OriginalArg(4) float arg4, @OriginalArg(5) float arg5) {
-		@Pc(3) float local3 = arg4 * 2.0F;
+	private static void method4175(@OriginalArg(0) float arg0, @OriginalArg(1) float arg1, @OriginalArg(2) float arg2, @OriginalArg(3) float arg3, @OriginalArg(4) float nearClip, @OriginalArg(5) float farClip) {
+
+		float width = arg1 - arg0;
+		float height = arg3 - arg2;
+
+		hFOV = 2 * (float)Math.atan(width / (2 * nearClip));
+		vFOV = 2 * (float)Math.atan(height / (2 * nearClip));
+		hFOV = (float)Math.toDegrees(hFOV);
+		vFOV = (float)Math.toDegrees(vFOV);
+
+		@Pc(3) float local3 = nearClip * 2.0F;
 		matrix[0] = local3 / (arg1 - arg0);
 		matrix[1] = 0.0F;
 		matrix[2] = 0.0F;
@@ -606,11 +619,11 @@ public final class GlRenderer {
 		matrix[7] = 0.0F;
 		matrix[8] = (arg1 + arg0) / (arg1 - arg0);
 		matrix[9] = (arg3 + arg2) / (arg3 - arg2);
-		matrix[10] = aFloat30 = -(arg5 + arg4) / (arg5 - arg4);
+		matrix[10] = aFloat30 = -(farClip + nearClip) / (farClip - nearClip);
 		matrix[11] = -1.0F;
 		matrix[12] = 0.0F;
 		matrix[13] = 0.0F;
-		matrix[14] = aFloat32 = -(local3 * arg5) / (arg5 - arg4);
+		matrix[14] = aFloat32 = -(local3 * farClip) / (farClip - nearClip);
 		matrix[15] = 0.0F;
 		gl.glLoadMatrixf(matrix, 0);
 		aFloat33 = 0.0F;

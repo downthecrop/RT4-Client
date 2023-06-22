@@ -1791,7 +1791,7 @@ public class SceneGraph {
 												renderPlainTile(node.plainTile, plane, pitchSin, pitchCos, yawSin, yawCos, nodeX, nodeZ, true);
 											} else {
 												var24 = true;
-												if (node.plainTile.anInt4865 != 12345678 || MiniMenu.aBoolean187 && level <= MiniMenu.anInt3902) {
+												if (node.plainTile.anInt4865 != 12345678 || MiniMenu.didClick && level <= MiniMenu.clickedPlane) {
 													renderPlainTile(node.plainTile, plane, pitchSin, pitchCos, yawSin, yawCos, nodeX, nodeZ, false);
 												}
 											}
@@ -3144,7 +3144,7 @@ public class SceneGraph {
 						}
 						if (anInt1142 == 0) {
 							if (!heights) {
-								MiniMenu.aBoolean187 = false;
+								MiniMenu.didClick = false;
 							}
 							return;
 						}
@@ -3203,7 +3203,7 @@ public class SceneGraph {
 						}
 						if (anInt1142 == 0) {
 							if (!heights) {
-								MiniMenu.aBoolean187 = false;
+								MiniMenu.didClick = false;
 							}
 							return;
 						}
@@ -3211,7 +3211,7 @@ public class SceneGraph {
 				}
 			}
 		}
-		MiniMenu.aBoolean187 = false;
+		MiniMenu.didClick = false;
 	}
 
 	@OriginalMember(owner = "client!lg", name = "a", descriptor = "(I)V")
@@ -3877,36 +3877,57 @@ public class SceneGraph {
 
 	@OriginalMember(owner = "client!ke", name = "a", descriptor = "(Lclient!rh;IIIIIIIZ)V")
 	public static void renderPlainTile(@OriginalArg(0) PlainTile tile, @OriginalArg(1) int plane, @OriginalArg(2) int pitchSin, @OriginalArg(3) int pitchCos, @OriginalArg(4) int yawSin, @OriginalArg(5) int yawCos, @OriginalArg(6) int tileX, @OriginalArg(7) int tileZ, @OriginalArg(8) boolean arg8) {
-		@Pc(6) int local6;
-		@Pc(7) int local7 = local6 = (tileX << 7) - cameraX;
-		@Pc(14) int local14;
-		@Pc(15) int local15 = local14 = (tileZ << 7) - cameraZ;
+		@Pc(6) int tempXOffset;
+		// The X offset of the tile is calculated by shifting tileX left by 7 (essentially multiplying by 128) and subtracting the cameraX position.
+		@Pc(7) int xTileOffset = tempXOffset = (tileX << 7) - cameraX;
+
+		@Pc(14) int tempZOffset;
+		// Similarly, the Z offset of the tile is calculated by shifting tileZ left by 7 and subtracting the cameraZ position.
+		@Pc(15) int local15 = tempZOffset = (tileZ << 7) - cameraZ;
+
 		@Pc(20) int local20;
-		@Pc(21) int local21 = local20 = local7 + 128;
+		// The tile's extended X offset is calculated by adding 128 to xTileOffset.
+		@Pc(21) int local21 = local20 = xTileOffset + 128;
+
 		@Pc(26) int local26;
+		// The tile's extended Z offset is calculated by adding 128 to local15.
 		@Pc(27) int local27 = local26 = local15 + 128;
+
+		// The next 4 lines are calculating the height difference between the tile at different positions and the camera.
 		@Pc(37) int local37 = tileHeights[plane][tileX][tileZ] - cameraY;
 		@Pc(49) int local49 = tileHeights[plane][tileX + 1][tileZ] - cameraY;
 		@Pc(63) int local63 = tileHeights[plane][tileX + 1][tileZ + 1] - cameraY;
 		@Pc(75) int local75 = tileHeights[plane][tileX][tileZ + 1] - cameraY;
-		@Pc(85) int local85 = local15 * yawSin + local7 * yawCos >> 16;
-		@Pc(95) int local95 = local15 * yawCos - local7 * yawSin >> 16;
+
+		// The next two lines are performing a 2D rotation matrix on the tile's x and z position.
+		@Pc(85) int local85 = local15 * yawSin + xTileOffset * yawCos >> 16;
+		@Pc(95) int local95 = local15 * yawCos - xTileOffset * yawSin >> 16;
 		@Pc(97) int local97 = local85;
+
+		// Here, it's performing a similar rotation operation on the tile's height and the previously calculated y position.
 		@Pc(107) int local107 = local37 * pitchCos - local95 * pitchSin >> 16;
 		@Pc(117) int local117 = local37 * pitchSin + local95 * pitchCos >> 16;
 		@Pc(119) int local119 = local107;
+
+		// If the transformed y position is less than 50, it stops execution to avoid rendering things that are too close to the camera.
 		if (local117 < 50) {
 			return;
 		}
-		local85 = local14 * yawSin + local21 * yawCos >> 16;
-		@Pc(143) int local143 = local14 * yawCos - local21 * yawSin >> 16;
+
+		// The following lines perform similar transformations for other points on the tile using different offsets and storing the results in different local variables.
+		local85 = tempZOffset * yawSin + local21 * yawCos >> 16;
+		@Pc(143) int local143 = tempZOffset * yawCos - local21 * yawSin >> 16;
 		local21 = local85;
 		local85 = local49 * pitchCos - local143 * pitchSin >> 16;
 		@Pc(165) int local165 = local49 * pitchSin + local143 * pitchCos >> 16;
 		local49 = local85;
+
+		// It continues to check for proximity to the camera and terminates execution if the objects are too close.
 		if (local165 < 50) {
 			return;
 		}
+
+		// More transformations for other points on the tile.
 		local85 = local27 * yawSin + local20 * yawCos >> 16;
 		local27 = local27 * yawCos - local20 * yawSin >> 16;
 		@Pc(193) int local193 = local85;
@@ -3916,14 +3937,17 @@ public class SceneGraph {
 		if (local27 < 50) {
 			return;
 		}
-		local85 = local26 * yawSin + local6 * yawCos >> 16;
-		@Pc(239) int local239 = local26 * yawCos - local6 * yawSin >> 16;
+
+		local85 = local26 * yawSin + tempXOffset * yawCos >> 16;
+		@Pc(239) int local239 = local26 * yawCos - tempXOffset * yawSin >> 16;
 		@Pc(241) int local241 = local85;
 		local85 = local75 * pitchCos - local239 * pitchSin >> 16;
 		@Pc(261) int local261 = local75 * pitchSin + local239 * pitchCos >> 16;
 		if (local261 < 50) {
 			return;
 		}
+
+		// The next 8 lines convert the 3D coordinates back to 2D for rendering on the screen. The coordinates are adjusted for the center of the screen (Rasteriser.centerX, Rasteriser.centerY) and then shifted and divided by the transformed Z position to account for perspective.
 		@Pc(275) int local275 = Rasteriser.centerX + (local97 << 9) / local117;
 		@Pc(283) int local283 = Rasteriser.centerY + (local119 << 9) / local117;
 		@Pc(291) int local291 = Rasteriser.centerX + (local21 << 9) / local165;
@@ -3935,9 +3959,9 @@ public class SceneGraph {
 		Rasteriser.alpha = 0;
 		@Pc(475) int local475;
 		if ((local307 - local323) * (local299 - local331) - (local315 - local331) * (local291 - local323) > 0) {
-			if (MiniMenu.aBoolean187 && method583(MiniMenu.anInt2388 + Rasteriser.centerX, MiniMenu.anInt3259 + Rasteriser.centerY, local315, local331, local299, local307, local323, local291)) {
-				MiniMenu.anInt1742 = tileX;
-				MiniMenu.anInt2954 = tileZ;
+			if (MiniMenu.didClick && isPointInTriangle(MiniMenu.clickedZ + Rasteriser.centerX, MiniMenu.clickedX + Rasteriser.centerY, local315, local331, local299, local307, local323, local291)) {
+				MiniMenu.worldSpaceTileX = tileX;
+				MiniMenu.worldSpaceTileZ = tileZ;
 			}
 			if (!GlRenderer.enabled && !arg8) {
 				Rasteriser.testX = local307 < 0 || local323 < 0 || local291 < 0 || local307 > Rasteriser.width || local323 > Rasteriser.width || local291 > Rasteriser.width;
@@ -3958,9 +3982,9 @@ public class SceneGraph {
 		if ((local275 - local291) * (local331 - local299) - (local283 - local299) * (local323 - local291) <= 0) {
 			return;
 		}
-		if (MiniMenu.aBoolean187 && method583(MiniMenu.anInt2388 + Rasteriser.centerX, MiniMenu.anInt3259 + Rasteriser.centerY, local283, local299, local331, local275, local291, local323)) {
-			MiniMenu.anInt1742 = tileX;
-			MiniMenu.anInt2954 = tileZ;
+		if (MiniMenu.didClick && isPointInTriangle(MiniMenu.clickedZ + Rasteriser.centerX, MiniMenu.clickedX + Rasteriser.centerY, local283, local299, local331, local275, local291, local323)) {
+			MiniMenu.worldSpaceTileX = tileX;
+			MiniMenu.worldSpaceTileZ = tileZ;
 		}
 		if (GlRenderer.enabled || arg8) {
 			return;
@@ -4231,22 +4255,23 @@ public class SceneGraph {
 	}
 
 	@OriginalMember(owner = "client!bi", name = "a", descriptor = "(IIIIIIII)Z")
-	public static boolean method583(@OriginalArg(0) int arg0, @OriginalArg(1) int arg1, @OriginalArg(2) int arg2, @OriginalArg(3) int arg3, @OriginalArg(4) int arg4, @OriginalArg(5) int arg5, @OriginalArg(6) int arg6, @OriginalArg(7) int arg7) {
-		if (arg1 < arg2 && arg1 < arg3 && arg1 < arg4) {
+	public static boolean isPointInTriangle(@OriginalArg(0) int pointX, @OriginalArg(1) int pointY, @OriginalArg(2) int vertex1X, @OriginalArg(3) int vertex1Y, @OriginalArg(4) int vertex2X, @OriginalArg(5) int vertex2Y, @OriginalArg(6) int vertex3X, @OriginalArg(7) int vertex3Y) {
+		if (pointY < vertex1Y && pointY < vertex2Y && pointY < vertex3Y) {
 			return false;
-		} else if (arg1 > arg2 && arg1 > arg3 && arg1 > arg4) {
+		} else if (pointY > vertex1Y && pointY > vertex2Y && pointY > vertex3Y) {
 			return false;
-		} else if (arg0 < arg5 && arg0 < arg6 && arg0 < arg7) {
+		} else if (pointX < vertex2X && pointX < vertex3X && pointX < vertex1X) {
 			return false;
-		} else if (arg0 > arg5 && arg0 > arg6 && arg0 > arg7) {
+		} else if (pointX > vertex2X && pointX > vertex3X && pointX > vertex1X) {
 			return false;
 		} else {
-			@Pc(59) int local59 = (arg1 - arg2) * (arg6 - arg5) - (arg0 - arg5) * (arg3 - arg2);
-			@Pc(75) int local75 = (arg1 - arg4) * (arg5 - arg7) - (arg0 - arg7) * (arg2 - arg4);
-			@Pc(91) int local91 = (arg1 - arg3) * (arg7 - arg6) - (arg0 - arg6) * (arg4 - arg3);
-			return local59 * local91 > 0 && local91 * local75 > 0;
+			int crossProduct1 = (pointY - vertex1Y) * (vertex3X - vertex2X) - (pointX - vertex2X) * (vertex2Y - vertex1Y);
+			int crossProduct2 = (pointY - vertex2Y) * (vertex1X - vertex3X) - (pointX - vertex3X) * (vertex1Y - vertex2Y);
+			int crossProduct3 = (pointY - vertex3Y) * (vertex2X - vertex1X) - (pointX - vertex1X) * (vertex2Y - vertex3Y);
+			return crossProduct1 * crossProduct3 > 0 && crossProduct3 * crossProduct2 > 0;
 		}
 	}
+
 
 	@OriginalMember(owner = "client!lh", name = "a", descriptor = "(Lclient!fg;IIIIIIZ)V")
 	public static void renderShapedTile(@OriginalArg(0) ShapedTile tile, @OriginalArg(1) int pitchSin, @OriginalArg(2) int pitchCos, @OriginalArg(3) int yawSin, @OriginalArg(4) int yawCos, @OriginalArg(5) int x, @OriginalArg(6) int y, @OriginalArg(7) boolean arg7) {
@@ -4288,9 +4313,9 @@ public class SceneGraph {
 			@Pc(160) int local160 = anIntArray164[local22];
 			@Pc(164) int local164 = anIntArray164[local29];
 			if ((local39 - local148) * (local164 - local160) - (local156 - local160) * (local152 - local148) > 0) {
-				if (MiniMenu.aBoolean187 && method583(MiniMenu.anInt2388 + Rasteriser.centerX, MiniMenu.anInt3259 + Rasteriser.centerY, local156, local160, local164, local39, local148, local152)) {
-					MiniMenu.anInt1742 = x;
-					MiniMenu.anInt2954 = y;
+				if (MiniMenu.didClick && isPointInTriangle(MiniMenu.clickedZ + Rasteriser.centerX, MiniMenu.clickedX + Rasteriser.centerY, local156, local160, local164, local39, local148, local152)) {
+					MiniMenu.worldSpaceTileX = x;
+					MiniMenu.worldSpaceTileZ = y;
 				}
 				if (!GlRenderer.enabled && !arg7) {
 					Rasteriser.testX = local39 < 0 || local148 < 0 || local152 < 0 || local39 > Rasteriser.width || local148 > Rasteriser.width || local152 > Rasteriser.width;

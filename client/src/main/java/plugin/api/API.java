@@ -1,5 +1,6 @@
 package plugin.api;
 
+import jdk.nashorn.internal.runtime.Debug;
 import plugin.PluginRepository;
 import rt4.*;
 import rt4.DisplayMode;
@@ -7,9 +8,13 @@ import rt4.Font;
 
 import java.awt.*;
 import java.awt.event.*;
+import java.awt.image.Raster;
 import java.util.ArrayList;
 
+import static rt4.GlRenderer.hFOV;
+import static rt4.GlRenderer.vFOV;
 import static rt4.MathUtils.clamp;
+import static rt4.Player.plane;
 
 /**
  * API used for writing plugins, so dozens of plugins don't break when we rename shit :)
@@ -61,6 +66,53 @@ public class API {
 
     public static boolean PlayerHasPrivilege(Privileges privilege) {
         return LoginManager.staffModLevel >= privilege.ordinal();
+    }
+
+    public static void calculateScreenPosition(int entityX, int entityY, int entityZ) {
+        // Constants for the fixed mode FOVs
+        final double FIXED_VFOV = 511.99998977517686;
+        final double FIXED_HFOV = 512.0000262961757;
+        final int HALF_FIXED_WIDTH = 256;
+        final int HALF_FIXED_HEIGHT = 167;
+
+        // Adjust for the camera
+        int elevation = SceneGraph.getTileHeight(plane, entityX, entityZ) - entityY;
+        entityX -= SceneGraph.cameraX;
+        elevation -= SceneGraph.cameraY;
+        entityZ -= SceneGraph.cameraZ;
+
+        // Rotate based on camera angles
+        int sinPitch = MathUtils.sin[Camera.cameraPitch];
+        int cosPitch = MathUtils.cos[Camera.cameraPitch];
+        int sinYaw = MathUtils.sin[Camera.cameraYaw];
+        int cosYaw = MathUtils.cos[Camera.cameraYaw];
+
+        int rotatedX = (entityZ * sinYaw + entityX * cosYaw) >> 16;
+        entityZ = (entityZ * cosYaw - entityX * sinYaw) >> 16;
+        entityX = rotatedX;
+
+        int rotatedY = (elevation * cosPitch - entityZ * sinPitch) >> 16;
+        entityZ = (elevation * sinPitch + entityZ * cosPitch) >> 16;
+        elevation = rotatedY;
+
+        // Calculate sprite positions
+        if (entityZ >= 50) {
+            if(GetWindowMode() == WindowMode.FIXED) {
+                // Use the constants for fixed mode
+                ScriptRunner.spriteDrawX = HALF_FIXED_WIDTH + (int)((entityX * FIXED_HFOV) / entityZ);
+                ScriptRunner.spriteDrawY = HALF_FIXED_HEIGHT + (int)((elevation * FIXED_VFOV) / entityZ);
+
+            } else {
+                // Calculate view distance based on vFOV and hFOV
+                double newViewDistH = (GlRenderer.viewportWidth / 2) / Math.tan(Math.toRadians(hFOV) / 2);
+                double newViewDistV = (GlRenderer.viewportHeight / 2) / Math.tan(Math.toRadians(vFOV) / 2);
+                ScriptRunner.spriteDrawX = GlRenderer.viewportWidth / 2 + (int)((entityX * newViewDistH) / entityZ);
+                ScriptRunner.spriteDrawY = GlRenderer.viewportHeight / 2 + (int)((elevation * newViewDistV) / entityZ);
+            }
+        } else {
+            ScriptRunner.spriteDrawX = -1;
+            ScriptRunner.spriteDrawY = -1;
+        }
     }
 
     public static boolean IsHD() {

@@ -27,7 +27,7 @@ public class Cheat {
 	@OriginalMember(owner = "client!rc", name = "K", descriptor = "Lclient!na;")
 	public static final JagString RECT_DEBUG = JagString.parse("::rect_debug");
 	@OriginalMember(owner = "client!hh", name = "b", descriptor = "Lclient!na;")
-	public static final JagString aClass100_521 = JagString.parse("::tele ");
+	public static final JagString TELEPORT = JagString.parse("::tele ");
 	@OriginalMember(owner = "client!hh", name = "k", descriptor = "Lclient!na;")
 	public static final JagString WM0 = JagString.parse("::wm0");
 	@OriginalMember(owner = "client!tg", name = "i", descriptor = "Lclient!na;")
@@ -102,7 +102,7 @@ public class Cheat {
 
 	@OriginalMember(owner = "client!en", name = "a", descriptor = "(IIIB)V")
 	public static void teleport(@OriginalArg(0) int arg0, @OriginalArg(1) int arg1, @OriginalArg(2) int arg2) {
-		@Pc(66) JagString local66 = JagString.concatenate(new JagString[]{aClass100_521, JagString.parseInt(arg2), JagString.aClass100_760, JagString.parseInt(arg0 >> 6), JagString.aClass100_760, JagString.parseInt(arg1 >> 6), JagString.aClass100_760, JagString.parseInt(arg0 & 0x3F), JagString.aClass100_760, JagString.parseInt(arg1 & 0x3F)});
+		@Pc(66) JagString local66 = JagString.concatenate(new JagString[]{TELEPORT, JagString.parseInt(arg2), JagString.aClass100_760, JagString.parseInt(arg0 >> 6), JagString.aClass100_760, JagString.parseInt(arg1 >> 6), JagString.aClass100_760, JagString.parseInt(arg0 & 0x3F), JagString.aClass100_760, JagString.parseInt(arg1 & 0x3F)});
 		local66.print();
 		execute(local66);
 	}

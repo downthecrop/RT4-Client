@@ -174,6 +174,10 @@ public class PluginRepository {
         loadedPlugins.values().forEach((plugin) -> plugin.DrawMiniMenu(entry));
     }
 
+    public static void OnMoveCameraWithPlayer() {
+        loadedPlugins.values().forEach(Plugin::OnMoveCameraWithPlayer);
+    }
+
     public static void OnMiniMenuCreate() {
         API.customMiniMenuIndex = 0;
         loadedPlugins.values().forEach((plugin) -> plugin.OnMiniMenuCreate(API.GetMiniMenuEntries()));

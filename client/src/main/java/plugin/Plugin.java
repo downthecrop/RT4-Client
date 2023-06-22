@@ -23,6 +23,8 @@ public abstract class Plugin {
         timeOfLastUpdate = nowTime;
     }
 
+    public void OnMoveCameraWithPlayer() {}
+
     /**
      * Init() is called when the plugin is first loaded and any time the window is resized
      */
