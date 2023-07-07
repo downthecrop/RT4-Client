@@ -683,7 +683,7 @@ public final class client extends GameShell {
 	public static void topBannerRefresh() {
 		if (!advertSuppressed && modeWhere != 2) {
 			try {
-				aClass100_900.browserControlCall(instance);
+				//aClass100_900.browserControlCall(instance);
 			} catch (@Pc(26) Throwable local26) {
 			}
 		}
@@ -720,8 +720,6 @@ public final class client extends GameShell {
 			@Pc(65) Container local65;
 			if (GameShell.fullScreenFrame != null) {
 				local65 = GameShell.fullScreenFrame;
-			} else if (GameShell.frame == null) {
-				local65 = GameShell.signLink.applet;
 			} else {
 				local65 = GameShell.frame;
 			}
@@ -916,7 +914,7 @@ public final class client extends GameShell {
 		} catch (@Pc(130) Exception local130) {
 			affiliate = 0;
 		}
-		settings = SETTINGS.fromParameters(this);
+		//settings = SETTINGS.fromParameters(this);
 		if (settings == null) {
 			settings = JagString.EMPTY;
 		}
@@ -1119,7 +1117,7 @@ public final class client extends GameShell {
 											}
 											if (Protocol.openUrlRequest != null && Protocol.openUrlRequest.status == 1) {
 												if (Protocol.openUrlRequest.result != null) {
-													ScriptRunner.openUrl(ScriptRunner.url, Protocol.newTab);
+													//ScriptRunner.openUrl(ScriptRunner.url, Protocol.newTab);
 												}
 												Protocol.newTab = false;
 												ScriptRunner.url = null;

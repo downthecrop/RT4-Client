@@ -7,6 +7,7 @@ import org.openrs2.deob.annotation.OriginalMember;
 import org.openrs2.deob.annotation.Pc;
 
 import java.applet.Applet;
+
 import java.awt.*;
 import java.io.DataInputStream;
 import java.io.File;
@@ -16,9 +17,6 @@ import java.lang.reflect.Method;
 import java.net.InetAddress;
 import java.net.Socket;
 import java.net.URL;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.StandardCopyOption;
 import java.util.Hashtable;
 
 @OriginalClass("signlink!ll")
@@ -289,7 +287,7 @@ public final class SignLink implements Runnable {
 	}
 
 	@OriginalMember(owner = "signlink!ll", name = "a", descriptor = "([IIILjava/awt/Component;Ljava/awt/Point;I)Lsignlink!im;")
-	public final PrivilegedRequest setCursor(@OriginalArg(0) int[] pixels, @OriginalArg(2) int width, @OriginalArg(3) Component component, @OriginalArg(4) Point hotSpot, @OriginalArg(5) int height) {
+	public final PrivilegedRequest setCursor(@OriginalArg(0) int[] pixels, @OriginalArg(2) int width, @OriginalArg(3) Canvas component, @OriginalArg(4) Point hotSpot, @OriginalArg(5) int height) {
 		return this.enqueue(17, height, new Object[]{component, pixels, hotSpot}, width);
 	}
 

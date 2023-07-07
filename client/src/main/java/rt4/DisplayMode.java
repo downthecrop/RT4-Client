@@ -99,8 +99,6 @@ public final class DisplayMode {
 		@Pc(85) Container local85;
 		if (GameShell.fullScreenFrame != null) {
 			local85 = GameShell.fullScreenFrame;
-		} else if (GameShell.frame == null) {
-			local85 = GameShell.signLink.applet;
 		} else {
 			local85 = GameShell.frame;
 		}

@@ -1822,7 +1822,7 @@ public class Protocol {
 			inboundBuffer.gBytesIsaac(data, length);
 			JagString url = JagString.decodeString(data, length, 0);
 			if (GameShell.frame == null && (SignLink.anInt5928 == 3 || !SignLink.osName.startsWith("win") || client.haveIe6)) {
-				ScriptRunner.openUrl(url, true);
+				//ScriptRunner.openUrl(url, true);
 			} else {
 				ScriptRunner.url = url;
 				newTab = true;
@@ -2899,7 +2899,7 @@ public class Protocol {
 											}
 											if (openUrlRequest != null && openUrlRequest.status == 1) {
 												if (openUrlRequest.result != null) {
-													ScriptRunner.openUrl(ScriptRunner.url, newTab);
+													//ScriptRunner.openUrl(ScriptRunner.url, newTab);
 												}
 												ScriptRunner.url = null;
 												openUrlRequest = null;

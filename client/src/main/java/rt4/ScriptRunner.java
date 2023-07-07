@@ -1209,28 +1209,6 @@ public final class ScriptRunner {
 		}
 	}
 
-	@OriginalMember(owner = "client!nf", name = "a", descriptor = "(Lclient!na;BZ)V")
-	public static void openUrl(@OriginalArg(0) JagString arg0, @OriginalArg(2) boolean arg1) {
-		if (!arg1) {
-			try {
-				GameShell.instance.getAppletContext().showDocument(arg0.method3127(GameShell.instance.getCodeBase()), "_top");
-			} catch (@Pc(22) Exception local22) {
-			}
-			return;
-		}
-		if (GlRenderer.enabled && GameShell.openWindowJavaScript) {
-			try {
-				BrowserControl.call(GameShell.signLink.applet, "openjs", new Object[]{arg0.method3127(GameShell.instance.getCodeBase()).toString()});
-				return;
-			} catch (@Pc(48) Throwable local48) {
-			}
-		}
-		try {
-			GameShell.instance.getAppletContext().showDocument(arg0.method3127(GameShell.instance.getCodeBase()), "_blank");
-		} catch (@Pc(59) Exception local59) {
-		}
-	}
-
 	@OriginalMember(owner = "client!og", name = "a", descriptor = "(BIILclient!fe;III)V")
 	public static void setOverheadScreenCoordinateOffsets(@OriginalArg(1) int arg0, @OriginalArg(2) int arg1, @OriginalArg(3) PathingEntity arg2, @OriginalArg(4) int arg3, @OriginalArg(5) int arg4, @OriginalArg(6) int arg5) {
 		method1026(arg5, arg1, arg2.zFine, arg4, arg0, arg2.xFine, arg3);
@@ -4744,7 +4722,7 @@ public final class ScriptRunner {
 															DisplayMode.setWindowMode(false, Preferences.favoriteWorlds, -1, -1);
 														}
 														if (GameShell.frame == null) {
-															openUrl(method479(), false);
+															//openUrl(method479(), false);
 														} else {
 															System.exit(0);
 														}
@@ -4781,7 +4759,7 @@ public final class ScriptRunner {
 															Protocol.openUrlRequest = GameShell.signLink.openUrl(new String(local8356.method3148(), StandardCharsets.ISO_8859_1));
 															continue;
 														}
-														openUrl(local8356, local1552);
+														//openUrl(local8356, local1552);
 														continue;
 													}
 													if (opcode == 5422) {

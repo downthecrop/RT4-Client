@@ -310,13 +310,8 @@ public class WorldList {
 				local89 = JagString.concatenate(new JagString[]{aClass100_783, client.settings});
 			}
 			@Pc(182) JagString local182 = JagString.concatenate(new JagString[]{HTTP_PROTOCOL, local3.hostname, local62, aClass100_1107, JagString.parseInt(client.language), aClass100_801, JagString.parseInt(client.affiliate), local89, aClass100_659, client.objectTag ? aClass100_184 : aClass100_945, aClass100_420, client.javaScript ? aClass100_184 : aClass100_945, aClass100_260, client.advertSuppressed ? aClass100_184 : aClass100_945});
-			try {
-				client.instance.getAppletContext().showDocument(local182.method3107(), "_self");
-				return true;
-			} catch (@Pc(191) Exception local191) {
-				return false;
-			}
 		}
+		return false;
 	}
 
 	@OriginalMember(owner = "client!na", name = "a", descriptor = "(Lclient!ba;Lclient!ba;IIIZZ)I")

@@ -5,15 +5,13 @@ import org.openrs2.deob.annotation.OriginalClass;
 import org.openrs2.deob.annotation.OriginalMember;
 import org.openrs2.deob.annotation.Pc;
 
-import java.applet.Applet;
-import java.applet.AppletContext;
 import java.awt.*;
 import java.awt.event.*;
 import java.lang.reflect.Method;
 import java.net.URL;
 
 @OriginalClass("client!rc")
-public abstract class GameShell extends Applet implements Runnable, FocusListener, WindowListener {
+public abstract class GameShell extends Canvas implements Runnable, FocusListener, WindowListener {
 
 	@OriginalMember(owner = "client!sh", name = "l", descriptor = "[J")
 	public static final long[] logicTimes = new long[32];
@@ -185,8 +183,6 @@ public abstract class GameShell extends Applet implements Runnable, FocusListene
 		@Pc(8) Container local8;
 		if (fullScreenFrame != null) {
 			local8 = fullScreenFrame;
-		} else if (frame == null) {
-			local8 = signLink.applet;
 		} else {
 			local8 = frame;
 		}
@@ -238,8 +234,6 @@ public abstract class GameShell extends Applet implements Runnable, FocusListene
 			@Pc(46) Container local46;
 			if (fullScreenFrame != null) {
 				local46 = fullScreenFrame;
-			} else if (frame == null) {
-				local46 = signLink.applet;
 			} else {
 				local46 = frame;
 			}
@@ -293,16 +287,6 @@ public abstract class GameShell extends Applet implements Runnable, FocusListene
 	public final void windowDeactivated(@OriginalArg(0) WindowEvent event) {
 	}
 
-	@OriginalMember(owner = "client!rc", name = "getAppletContext", descriptor = "()Ljava/applet/AppletContext;")
-	@Override
-	public final AppletContext getAppletContext() {
-		if (frame == null) {
-			return signLink == null || signLink.applet == this ? super.getAppletContext() : signLink.applet.getAppletContext();
-		} else {
-			return null;
-		}
-	}
-
 	@OriginalMember(owner = "client!rc", name = "focusGained", descriptor = "(Ljava/awt/event/FocusEvent;)V")
 	@Override
 	public final void focusGained(@OriginalArg(0) FocusEvent event) {
@@ -329,13 +313,11 @@ public abstract class GameShell extends Applet implements Runnable, FocusListene
 		@Pc(19) Container container;
 		if (fullScreenFrame != null) {
 			container = fullScreenFrame;
-		} else if (frame == null) {
-			container = signLink.applet;
 		} else {
 			container = frame;
 		}
 		container.setLayout(null);
-		canvas = new GameCanvas(this);
+		canvas = new Canvas(this.getGraphicsConfiguration());
 		container.add(canvas);
 		canvas.setSize(canvasWidth, canvasHeight);
 		canvas.setVisible(true);
@@ -355,7 +337,6 @@ public abstract class GameShell extends Applet implements Runnable, FocusListene
 	}
 
 	@OriginalMember(owner = "client!rc", name = "destroy", descriptor = "()V")
-	@Override
 	public final void destroy() {
 		if (instance == this && !shutdown) {
 			killTime = MonotonicClock.currentTimeMillis();
@@ -378,10 +359,6 @@ public abstract class GameShell extends Applet implements Runnable, FocusListene
 		}
 		this.error = true;
 		System.out.println("error_game_" + error);
-		try {
-			this.getAppletContext().showDocument(new URL(this.getCodeBase(), "error_game_" + error + ".ws"), "_top");
-		} catch (@Pc(47) Exception ex) {
-		}
 	}
 
 	@OriginalMember(owner = "client!rc", name = "c", descriptor = "(B)V")
@@ -391,13 +368,8 @@ public abstract class GameShell extends Applet implements Runnable, FocusListene
 	protected abstract void reset();
 
 	@OriginalMember(owner = "client!rc", name = "getDocumentBase", descriptor = "()Ljava/net/URL;")
-	@Override
 	public final URL getDocumentBase() {
-		if (frame == null) {
-			return signLink == null || signLink.applet == this ? super.getDocumentBase() : signLink.applet.getDocumentBase();
-		} else {
 			return null;
-		}
 	}
 
 	@OriginalMember(owner = "client!rc", name = "paint", descriptor = "(Ljava/awt/Graphics;)V")
@@ -524,13 +496,9 @@ public abstract class GameShell extends Applet implements Runnable, FocusListene
 	protected abstract void mainRedraw();
 
 	@OriginalMember(owner = "client!rc", name = "getCodeBase", descriptor = "()Ljava/net/URL;")
-	@Override
 	public final URL getCodeBase() {
-		if (frame == null) {
-			return signLink == null || signLink.applet == this ? super.getCodeBase() : signLink.applet.getCodeBase();
-		} else {
 			return null;
-		}
+
 	}
 
 	public double calcUpdateDelta(double value) {
@@ -645,20 +613,16 @@ public abstract class GameShell extends Applet implements Runnable, FocusListene
 	}
 
 	@OriginalMember(owner = "client!rc", name = "getParameter", descriptor = "(Ljava/lang/String;)Ljava/lang/String;")
-	@Override
 	public final String getParameter(@OriginalArg(0) String name) {
-		if (frame == null) {
-			return signLink == null || signLink.applet == this ? super.getParameter(name) : signLink.applet.getParameter(name);
-		} else {
+
 			return null;
-		}
+
 	}
 
 	@OriginalMember(owner = "client!rc", name = "g", descriptor = "(I)V")
 	protected abstract void mainInit();
 
 	@OriginalMember(owner = "client!rc", name = "stop", descriptor = "()V")
-	@Override
 	public final void stop() {
 		if (instance == this && !shutdown) {
 			killTime = MonotonicClock.currentTimeMillis() + 4000L;
@@ -706,7 +670,6 @@ public abstract class GameShell extends Applet implements Runnable, FocusListene
 	}
 
 	@OriginalMember(owner = "client!rc", name = "start", descriptor = "()V")
-	@Override
 	public final void start() {
 		if (instance == this && !shutdown) {
 			killTime = 0L;
@@ -716,15 +679,6 @@ public abstract class GameShell extends Applet implements Runnable, FocusListene
 	@OriginalMember(owner = "client!rc", name = "a", descriptor = "(BIIII)V")
 	protected final void startApplet(@OriginalArg(2) int cacheId) {
 		try {
-			if (instance != null) {
-				instances++;
-				if (instances >= 3) {
-					this.error("alreadyloaded");
-					return;
-				}
-				this.getAppletContext().showDocument(this.getDocumentBase(), "_self");
-				return;
-			}
 			instance = this;
 			topMargin = 0;
 			clientBuild = 1530;
@@ -736,7 +690,7 @@ public abstract class GameShell extends Applet implements Runnable, FocusListene
 			@Pc(54) String openWindowJavaScriptStr = this.getParameter("openwinjs");
 			openWindowJavaScript = openWindowJavaScriptStr != null && openWindowJavaScriptStr.equals("1");
 			if (signLink == null) {
-				signLink2 = signLink = new SignLink(this, cacheId, null, 0);
+				//signLink2 = signLink = new SignLink(this, cacheId, null, 0);
 			}
 			@Pc(86) PrivilegedRequest request = signLink.startThread(1, this);
 			while (request.status == 0) {

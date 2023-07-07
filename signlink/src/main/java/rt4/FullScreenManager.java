@@ -48,7 +48,7 @@ public final class FullScreenManager {
 		} catch (@Pc(27) Throwable ex) {
 		}
 		try {
-			this.device.setFullScreenWindow(frame);
+			//this.device.setFullScreenWindow(frame);
 		} finally {
 			if (wasValid) {
 				try {
